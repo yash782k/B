@@ -1,0 +1,105 @@
+.leads {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.filters button {
+  margin: 5px;
+  padding: 10px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.filters button:hover {
+  background-color: #0056b3;
+}
+
+.create-btn {
+  margin-bottom: 20px;
+  padding: 10px 20px;
+  border: none;
+  background-color: #28a745;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.create-btn:hover {
+  background-color: #218838;
+}
+
+.lead-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.lead-form label {
+  margin-bottom: 5px;
+}
+
+.lead-form input,
+.lead-form select {
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.lead-form button {
+  margin-top: 10px;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.lead-form button[type="submit"] {
+  background-color: #007bff;
+  color: white;
+}
+
+.lead-form button[type="submit"]:hover {
+  background-color: #0056b3;
+}
+
+.lead-form .cancel-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
+.lead-form .cancel-btn:hover {
+  background-color: #c82333;
+}
+
+.lead-list {
+  margin-top: 20px;
+}
+
+.lead-item {
+  border: 1px solid #ddd;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  background-color: #fff;
+}
+
+.error-message {
+  color: red;
+}
+
+.success-message {
+  color: green;
+}

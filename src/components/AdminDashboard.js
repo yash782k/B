@@ -36,14 +36,19 @@ const AdminDashboard = () => {
   };
 
   const handleViewLogs = () => {
-    navigate('/active-log'); // Navigate to ActiveLog page
+    navigate('/active-log');
+  };
+
+  const handleLeads = () => {
+    navigate('/leads'); // Navigate to Leads page
   };
 
   return (
     <div>
       <h2>Admin Dashboard</h2>
       <button onClick={() => navigate('/create-branch')}>Create Branch</button>
-      <button onClick={handleViewLogs}>View Active Logs</button> {/* New button for ActiveLog */}
+      <button onClick={handleViewLogs}>View Active Logs</button>
+      <button onClick={handleLeads}>View Leads</button> {/* New button for Leads */}
       <div>
         {branches.map(branch => (
           <div key={branch.id} style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #ccc', padding: '10px' }}>
@@ -55,6 +60,8 @@ const AdminDashboard = () => {
             <div>
               <button onClick={() => handleEdit(branch.id)}>Edit</button>
               <button onClick={() => handleDelete(branch.id)}>Delete</button>
+              <button onClick={() => navigate('/create-superadmin')}>Create Super Admin</button>
+
             </div>
           </div>
         ))}

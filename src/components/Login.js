@@ -1,3 +1,4 @@
+// src/components/Login.js
 import React, { useState } from 'react';
 import { Button, Checkbox, TextField } from '@mui/material';
 import { signInWithEmailAndPassword, getAuth } from 'firebase/auth';
@@ -29,29 +30,38 @@ const Login = () => {
     const auth = getAuth();
 
     try {
+      // Old Logic: Hard-coded Super Admin login
       if (email === HARD_CODED_ADMIN_EMAIL && password === HARD_CODED_ADMIN_PASSWORD) {
         navigate('/admin-dashboard');
         return;
       }
 
+      // New Logic: Sign in with email and password
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      const branchQuery = query(collection(db, 'branches'), where('emailId', '==', email));
-      const querySnapshot = await getDocs(branchQuery);
+      // Check if the user is an additional Super Admin
+      const superAdminQuery = query(collection(db, 'superadmins'), where('email', '==', email));
+      const superAdminSnapshot = await getDocs(superAdminQuery);
 
-      if (querySnapshot.empty) {
+      if (!superAdminSnapshot.empty) {
+        // If the user is an additional Super Admin, navigate to the Super Admin dashboard
+        navigate('/admin-dashboard');
+        return;
+      }
+
+      // Check for regular user login
+      const branchQuery = query(collection(db, 'branches'), where('emailId', '==', email));
+      const branchSnapshot = await getDocs(branchQuery);
+
+      if (branchSnapshot.empty) {
         setError('No branch found for this user.');
         setLoading(false);
         return;
       }
 
-      const branchData = querySnapshot.docs[0].data();
+      const branchData = branchSnapshot.docs[0].data();
       const today = await fetchRealTimeDate();
-
-      console.log('Today\'s Date:', today);
-      console.log('Active Date:', branchData.activeDate);
-      console.log('Deactive Date:', branchData.deactiveDate);
 
       const activeDate = new Date(branchData.activeDate);
       const deactiveDate = new Date(branchData.deactiveDate);
@@ -70,16 +80,13 @@ const Login = () => {
 
       if (branchData.firstLogin) {
         navigate('/change-password');
-        const branchDoc = doc(db, 'branches', querySnapshot.docs[0].id);
+        const branchDoc = doc(db, 'branches', branchSnapshot.docs[0].id);
         await updateDoc(branchDoc, { firstLogin: false });
         return;
       }
 
-      if (branchData.branchCode === 'SUPERADMIN123') {
-        navigate('/admin-dashboard');
-      } else {
-        navigate('/welcome');
-      }
+      // Navigate to the appropriate dashboard
+      navigate('/welcome');
 
     } catch (error) {
       console.error('Login error:', error);

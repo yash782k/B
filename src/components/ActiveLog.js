@@ -1,22 +1,22 @@
 // src/components/ActiveLog.js
 import React, { useState, useEffect } from 'react';
-import { collection, getDocs, orderBy, query } from 'firebase/firestore';
+import { collection, query, orderBy, getDocs } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
+import './activeLog.css'; // Import the CSS file for styling
 
 const ActiveLog = () => {
   const [logs, setLogs] = useState([]);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const fetchLogs = async () => {
       try {
-        // Query logs sorted by timestamp
-        const logsCollection = collection(db, 'activeLogs');
-        const q = query(logsCollection, orderBy('logDate', 'desc'));
-        const logsSnapshot = await getDocs(q);
-        const logsList = logsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setLogs(logsList);
+        const logsQuery = query(collection(db, 'activityLogs'), orderBy('timestamp', 'desc'));
+        const querySnapshot = await getDocs(logsQuery);
+        const logsData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setLogs(logsData);
       } catch (error) {
-        console.error('Error fetching active logs:', error);
+        setError('Error fetching logs.');
       }
     };
 
@@ -24,24 +24,31 @@ const ActiveLog = () => {
   }, []);
 
   return (
-    <div>
-      <h2>Active Log</h2>
-      <div>
-        {logs.length === 0 ? (
-          <p>No logs available.</p>
-        ) : (
-          logs.map(log => (
-            <div key={log.id} style={{ borderBottom: '1px solid #ccc', padding: '10px' }}>
-              <p><strong>Branch Code:</strong> {log.branchCode}</p>
-              <p><strong>Timestamp:</strong> {new Date(log.logDate.seconds * 1000).toLocaleString()}</p>
-              <p><strong>Changed Field:</strong> {log.changedField}</p>
-              <p><strong>Old Value:</strong> {log.oldValue}</p>
-              <p><strong>New Value:</strong> {log.newValue}</p>
-              <p><strong>Activity:</strong> {log.activity}</p>
-            </div>
-          ))
-        )}
-      </div>
+    <div className="active-log">
+      <h2>Activity Logs</h2>
+      {error && <p className="error-message">{error}</p>}
+      <table>
+        <thead>
+          <tr>
+            <th>Admin</th>
+            <th>Time</th>
+            <th>Action</th>
+            <th>Old Values</th>
+            <th>New Values</th>
+          </tr>
+        </thead>
+        <tbody>
+          {logs.map(log => (
+            <tr key={log.id}>
+              <td>{log.adminName}</td>
+              <td>{new Date(log.timestamp.seconds * 1000).toLocaleString()}</td>
+              <td>{log.action}</td>
+              <td>{log.oldValues ? JSON.stringify(log.oldValues) : '-'}</td>
+              <td>{log.newValues ? JSON.stringify(log.newValues) : '-'}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };

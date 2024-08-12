@@ -13,11 +13,21 @@ const Welcome = () => {
     navigate('/login');
   };
 
+  const handleProductPage = () => {
+    navigate('/product');
+  };
+
+  const handleCustomizePage = () => {
+    navigate('/customize');
+  };
+
   return (
     <div>
       <h1>Welcome, {user ? user.email : 'User'}!</h1>
       <p>You have successfully logged in.</p>
       <button onClick={handleLogout}>Logout</button>
+      <button onClick={handleProductPage}>Product</button>
+      <button onClick={handleCustomizePage}>Customize</button>
     </div>
   );
 };

@@ -1,0 +1,106 @@
+/* src/components/editBranch.css */
+
+.edit-branch {
+    max-width: 1000px; /* Wider max-width to accommodate horizontal layout */
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-wrap: wrap; /* Allow items to wrap if needed */
+    gap: 20px; /* Space between form elements */
+  }
+  
+  .edit-branch h2 {
+    width: 100%;
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  .edit-branch form {
+    display: flex;
+    flex-wrap: wrap; /* Allow items to wrap in the form */
+    gap: 20px; /* Space between form items */
+    width: 100%;
+  }
+  
+  .edit-branch .form-group {
+    flex: 1 1 45%; /* Flex grow and shrink with a base size of 45% */
+    min-width: 250px; /* Minimum width to ensure fields don’t shrink too much */
+  }
+  
+  .edit-branch label {
+    font-size: 14px;
+    color: #555;
+    display: block; /* Ensure label takes full width */
+    margin-bottom: 6px; /* Space below label */
+  }
+  
+  .edit-branch input,
+  .edit-branch select,
+  .edit-branch button {
+    font-size: 14px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 100%; /* Full width within the form group */
+  }
+  
+  .edit-branch input[type="date"] {
+    cursor: pointer;
+  }
+  
+  .edit-branch input[type="number"] {
+    width: auto; /* Adjust width to fit content */
+    text-align: center;
+  }
+  
+  .edit-branch button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .edit-branch button:hover {
+    background-color: #0056b3;
+  }
+  
+  .edit-branch .error-message,
+  .edit-branch .success-message {
+    width: 100%;
+    font-size: 12px;
+    margin: 10px 0;
+  }
+  
+  .edit-branch .error-message {
+    color: #dc3545;
+  }
+  
+  .edit-branch .success-message {
+    color: #28a745;
+  }
+  
+  .edit-branch .number-of-users {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between buttons and number display */
+  }
+  
+  .edit-branch .number-of-users button {
+    background-color: #e9ecef;
+    border: 1px solid #ced4da;
+    cursor: pointer;
+  }
+  
+  .edit-branch .number-of-users button:hover {
+    background-color: #ced4da;
+  }
+  
+  .edit-branch .number-of-users span {
+    font-size: 14px;
+  }
+  
