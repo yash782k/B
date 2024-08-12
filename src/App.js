@@ -10,7 +10,10 @@ import ActiveLog from './components/ActiveLog';
 import Leads from './components/Leads';
 import Product from './components/Product';
 import Customize from './components/Customize';
-import CreateSuperAdmin from './components/CreateSuperAdmin'; // Import should be correct
+import CreateSuperAdmin from './components/CreateSuperAdmin';
+import LeadForm from './components/LeadForm';
+import Profile from './components/Profile';
+import Layout from './components/Layout';
 
 const App = () => (
   <Router>
@@ -20,7 +23,7 @@ const App = () => (
       <Route path="/" element={<Login />} />
       <Route path="/change-password" element={<ChangePassword />} />
       <Route path="/admin-dashboard" element={<AdminDashboard />} />
-      <Route path="/leads" element={<Leads />} />
+      {/* <Route path="/admin-dashboard" element={<Leads />} /> */}
       <Route path="/welcome" element={<Welcome />} />
       <Route path="/create-branch" element={<CreateBranch />} />
       <Route path="/edit-branch/:id" element={<EditBranch />} />
@@ -28,7 +31,10 @@ const App = () => (
       <Route path="/customize" element={<Customize />} />
       <Route path="/active-log" element={<ActiveLog />} />
       <Route path="/create-superadmin" element={<CreateSuperAdmin />} />
-
+      <Route path="/" element={<Layout />}>
+      <Route path="superadmin" element={<CreateSuperAdmin />} /> {/* Route for the LeadForm */}
+      <Route path="profile" element={<Profile />} />
+    </Route>
     </Routes>
   </Router>
 );

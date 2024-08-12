@@ -1,172 +1,85 @@
 import React, { useState, useEffect } from 'react';
-import { collection, addDoc, getDocs, updateDoc, doc } from 'firebase/firestore';
-import { db } from '../firebaseConfig';
-import './Leads.css'; // Add your custom styling here
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
+import './Leads.css'; // Import the CSS file for styling
+import logo from '../assets/logo.png'; // Correct the import path to where your logo is located
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../firebaseConfig'; // Import the auth instance from firebaseConfig
 
-const Leads = () => {
-  const [leads, setLeads] = useState([]);
-  const [filteredLeads, setFilteredLeads] = useState([]);
-  const [showForm, setShowForm] = useState(false);
-  const [formData, setFormData] = useState({
-    name: '',
-    mobileNo: '',
-    emailId: '',
-    businessType: '',
-    demoDate: '',
-    demoTime: '',
-    status: 'Fresh Lead',
-  });
-  const [filter, setFilter] = useState('ALL Details');
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+const Lead = () => {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [userName, setUserName] = useState('');
+  const navigate = useNavigate(); // Initialize useNavigate
 
   useEffect(() => {
-    const fetchLeads = async () => {
-      try {
-        const leadsCollection = collection(db, 'leads');
-        const leadSnapshot = await getDocs(leadsCollection);
-        const leadList = leadSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setLeads(leadList);
-        setFilteredLeads(leadList);
-      } catch (error) {
-        setError('Error fetching leads.');
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUserName(user.displayName || 'User');
+      } else {
+        setUserName('Guest');
       }
-    };
-
-    fetchLeads();
+    });
+    return () => unsubscribe();
   }, []);
 
-  useEffect(() => {
-    if (filter === 'ALL Details') {
-      setFilteredLeads(leads);
-    } else {
-      setFilteredLeads(leads.filter(lead => lead.status === filter));
-    }
-  }, [filter, leads]);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prevState => ({ ...prevState, [name]: value }));
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-    setSuccess('');
-
-    try {
-      await addDoc(collection(db, 'leads'), formData);
-      setSuccess('Lead added successfully.');
-      setFormData({
-        name: '',
-        mobileNo: '',
-        emailId: '',
-        businessType: '',
-        demoDate: '',
-        demoTime: '',
-        status: 'Fresh Lead',
-      });
-      setShowForm(false);
-      // Re-fetch leads
-      const leadsCollection = collection(db, 'leads');
-      const leadSnapshot = await getDocs(leadsCollection);
-      const leadList = leadSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setLeads(leadList);
-    } catch (error) {
-      setError('Failed to add lead.');
-    }
-  };
-
-  const handleFilterClick = (filterValue) => {
-    setFilter(filterValue);
-    setShowForm(false); // Close the form when changing filters
-  };
-
-  const handleStatusChange = async (id, newStatus) => {
-    try {
-      const leadDoc = doc(db, 'leads', id);
-      await updateDoc(leadDoc, { status: newStatus });
-      // Re-fetch leads
-      const leadsCollection = collection(db, 'leads');
-      const leadSnapshot = await getDocs(leadsCollection);
-      const leadList = leadSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setLeads(leadList);
-    } catch (error) {
-      setError('Failed to update lead status.');
-    }
+  const handleAddLeadClick = () => {
+    navigate('/add-lead'); // Redirect to the LeadForm component
   };
 
   return (
-    <div className="leads">
-      <h2>Leads</h2>
-      <div className="filters">
-        <button onClick={() => handleFilterClick('ALL Details')}>ALL Details</button>
-        <button onClick={() => handleFilterClick('Fresh Lead')}>Fresh Lead</button>
-        <button onClick={() => handleFilterClick('Details Share')}>Details Share</button>
-        <button onClick={() => handleFilterClick('Demo Schedule')}>Demo Schedule</button>
-        <button onClick={() => handleFilterClick('Demo Done')}>Demo Done</button>
-        <button onClick={() => handleFilterClick('Loss')}>Loss</button>
-        <button onClick={() => handleFilterClick('Successful')}>Successful</button>
+    <div className="lead-container">
+      <nav className="navbar">
+        <button className="navbar-toggle" onClick={toggleSidebar}>
+          <span className="navbar-toggle-icon"></span>
+          <span className="navbar-toggle-icon"></span>
+          <span className="navbar-toggle-icon"></span>
+        </button>
+        <div className="navbar-logo">
+          <img src={logo} alt="Logo" />
+        </div>
+        <div className="navbar-links">
+          {/* Add more links as needed */}
+        </div>
+      </nav>
+
+      {/* Add Lead button */}
+      <div className="add-lead-container">
+        <button className="add-lead-button" onClick={handleAddLeadClick}>
+          Add Lead
+        </button>
       </div>
-      <button className="create-btn" onClick={() => setShowForm(true)}>Generate Fresh Lead</button>
-      {showForm && (
-        <form onSubmit={handleSubmit} className="lead-form">
-          <label>Name:
-            <input type="text" name="name" value={formData.name} onChange={handleChange} required />
-          </label>
-          <label>Mobile No:
-            <input type="text" name="mobileNo" value={formData.mobileNo} onChange={handleChange} required />
-          </label>
-          <label>Email ID:
-            <input type="email" name="emailId" value={formData.emailId} onChange={handleChange} required />
-          </label>
-          <label>Business Type:
-            <input type="text" name="businessType" value={formData.businessType} onChange={handleChange} required />
-          </label>
-          <label>Demo Date:
-            <input type="date" name="demoDate" value={formData.demoDate} onChange={handleChange} required />
-          </label>
-          <label>Demo Time:
-            <input type="time" name="demoTime" value={formData.demoTime} onChange={handleChange} required />
-          </label>
-          <label>Status:
-            <select name="status" value={formData.status} onChange={handleChange} required>
-              <option value="Fresh Lead">Fresh Lead</option>
-              <option value="Demo Schedule">Demo Schedule</option>
-              <option value="Demo Done">Demo Done</option>
-              <option value="Loss">Loss</option>
-              <option value="Successful">Successful</option>
-            </select>
-          </label>
-          <button type="submit">Add Lead</button>
-          <button type="button" className="cancel-btn" onClick={() => setShowForm(false)}>Cancel</button>
-        </form>
-      )}
-      <div className="lead-list">
-        {filteredLeads.map(lead => (
-          <div key={lead.id} className="lead-item">
-            <p><strong>Name:</strong> {lead.name}</p>
-            <p><strong>Mobile No:</strong> {lead.mobileNo}</p>
-            <p><strong>Email ID:</strong> {lead.emailId}</p>
-            <p><strong>Business Type:</strong> {lead.businessType}</p>
-            <p><strong>Demo Date:</strong> {lead.demoDate}</p>
-            <p><strong>Demo Time:</strong> {lead.demoTime}</p>
-            <p><strong>Status:</strong>
-              <select value={lead.status} onChange={(e) => handleStatusChange(lead.id, e.target.value)}>
-                <option value="Fresh Lead">Fresh Lead</option>
-                <option value="Demo Schedule">Demo Schedule</option>
-                <option value="Demo Done">Demo Done</option>
-                <option value="Loss">Loss</option>
-                <option value="Successful">Successful</option>
-              </select>
-            </p>
+
+      {sidebarOpen && (
+        <div className="sidebar">
+          <div className="sidebar-header">Welcome Back! {userName}</div>
+          <div className="sidebar-section">
+            <div className="sidebar-title">Leads</div>
+            <ul>
+              <li><button>Show all</button></li>
+              <li><button>Fresh Lead</button></li>
+              <li><button>Details Shared</button></li>
+              <li><button>Demo Scheduled</button></li>
+              <li><button>Demo Done</button></li>
+              <li><button>Lead Lost</button></li>
+              <li><button>Lead Won</button></li>
+            </ul>
           </div>
-        ))}
-      </div>
-      {error && <p className="error-message">{error}</p>}
-      {success && <p className="success-message">{success}</p>}
+          <div className="sidebar-section">
+            <div className="sidebar-title">Clients</div>
+            <ul>
+              <li><button>Show All</button></li>
+              <li><button>On-going subscriptions</button></li>
+              <li><button>Expiring Soon</button></li>
+              <li><button>Expired</button></li>
+            </ul>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-export default Leads;
+export default Lead;

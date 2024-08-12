@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { collection, addDoc } from 'firebase/firestore';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { db } from '../firebaseConfig';
 import { sendEmail } from '../utils/sendEmail';
 import { useNavigate } from 'react-router-dom';
+import { Password } from '@mui/icons-material';
+import './CreateSuperAdmin.css';
 
 const CreateSuperAdmin = () => {
   const [formData, setFormData] = useState({
@@ -48,44 +50,91 @@ const CreateSuperAdmin = () => {
     }
   };
 
-  return (
+  const [superAdmins, setSuperAdmins] = useState([]);
+
+  useEffect(() => {
+    setSuperAdmins([
+      { id: 1, name: 'Vaibhav Ugile', email: 'vaibhavugile17@gmail.com', password:'ABCD' },
+      { id: 2, name: 'Yash Agarwal', email: 'yashagarwal17@gmail.com', password:'ABCD' },
+      { id: 3, name: 'Tapan Sarkar', email: 'tapansarker903@gmail.com', password: 'ABCD' },
+    ]);
+  }, []);
+
+  return (    
     <div>
+          <div className="super-admin-table">
+          <h3>Recently Created Super Admin</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Sr. No.</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Password</th>
+              </tr>
+            </thead>
+            <tbody>
+              {superAdmins.length > 0 ? (
+                superAdmins.map((admin, index) => (
+                  <tr key={admin.id}>
+                    <td>{index + 1}</td>
+                    <td>{admin.name}</td>
+                    <td>{admin.email}</td>
+                    <td>{admin.password}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="4">No Data Available</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       <h2>Create New Super Admin</h2>
       <form onSubmit={handleCreateSuperAdmin}>
+        <div className='form'>
         <label>
-          Email:
-          <input 
-            type="email" 
-            name="email" 
-            value={formData.email} 
-            onChange={handleChange} 
-            required 
-          />
+          Name
         </label>
-        <br />
         <label>
-          Name:
-          <input 
+          Email ID
+        </label>
+        <label>
+         Password
+        </label>
+        </div>
+        <br/>
+        <div className='input'>
+           <input 
             type="text" 
             name="name" 
+            placeholder='Name'
             value={formData.name} 
             onChange={handleChange} 
             required 
           />
-        </label>
-        <br />
-        <label>
-          Password:
-          <input 
+             <input 
+            type="email" 
+            name="email" 
+            placeholder='Email'
+            value={formData.email} 
+            onChange={handleChange} 
+            required 
+          />
+            <input 
             type="password" 
             name="password" 
+            placeholder='Password'
             value={formData.password} 
             onChange={handleChange} 
             required 
           />
-        </label>
-        <br />
+          </div>
+          <br />
+          <div className='btn'>
         <button type="submit">Create Super Admin</button>
+        </div>
       </form>
       {error && <p>{error}</p>}
       {success && <p>{success}</p>}
