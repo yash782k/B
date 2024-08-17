@@ -6,6 +6,7 @@ import AdminDashboard from './components/AdminDashboard';
 import Welcome from './components/Welcome';
 import CreateBranch from './components/CreateBranch';
 import EditBranch from './components/EditBranch';
+import ActiveLog from './components/ActiveLog'; // Import the ActiveLog component
 
 const App = () => (
   <Router>
@@ -16,8 +17,7 @@ const App = () => (
       <Route path="/welcome" element={<Welcome />} />
       <Route path="/create-branch" element={<CreateBranch />} />
       <Route path="/edit-branch/:id" element={<EditBranch />} />
-
-      {/* Add more routes as needed */}
+      <Route path="/active-log" element={<ActiveLog />} /> {/* Add route for ActiveLog */}
     </Routes>
   </Router>
 );

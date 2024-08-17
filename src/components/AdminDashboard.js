@@ -1,4 +1,3 @@
-// src/components/AdminDashboard.js
 import React, { useState, useEffect } from 'react';
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
@@ -36,10 +35,15 @@ const AdminDashboard = () => {
     navigate(`/edit-branch/${id}`);
   };
 
+  const handleViewLogs = () => {
+    navigate('/active-log'); // Navigate to ActiveLog page
+  };
+
   return (
     <div>
       <h2>Admin Dashboard</h2>
       <button onClick={() => navigate('/create-branch')}>Create Branch</button>
+      <button onClick={handleViewLogs}>View Active Logs</button> {/* New button for ActiveLog */}
       <div>
         {branches.map(branch => (
           <div key={branch.id} style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #ccc', padding: '10px' }}>
