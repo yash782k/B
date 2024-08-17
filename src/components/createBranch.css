@@ -1,0 +1,30 @@
+/* createBranch.css */
+
+/* Container padding and form group margin */
+.container {
+  padding: 5px; /* Smaller padding */
+}
+
+.form-group {
+  margin-bottom: 5px; /* Smaller margin between form elements */
+}
+
+/* Example styles for inputs, buttons, etc. */
+input, .MuiTextField-root {
+  font-size: 0.875rem; /* Smaller font size */
+  padding: 5px; /* Smaller padding */
+}
+
+button, .MuiButton-root {
+  font-size: 0.875rem; /* Smaller font size */
+  padding: 6px 12px; /* Smaller padding */
+}
+
+h2 {
+  font-size: 1.5rem; /* Smaller heading size */
+  margin-bottom: 10px;
+}
+
+.error-message, .success-message {
+  font-size: 0.875rem; /* Smaller font size */
+}
